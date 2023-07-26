@@ -42,4 +42,14 @@ public class BoardEntity extends BaseEntity { // DB의 테이블 역할을 하�
         return boardEntity;
     }
 
+    public static BoardEntity toUpdateEntity(BoardDTO boardDTO) { //update 를 위해 entity 로 바꿔 주는 메소드 id 가 추가됨
+        BoardEntity boardEntity = new BoardEntity();
+        boardEntity.setId(boardDTO.getId());
+        boardEntity.setBoardWriter(boardDTO.getBoardWriter());
+        boardEntity.setBoardPass(boardDTO.getBoardPass());
+        boardEntity.setBoardTitle(boardDTO.getBoardTitle());
+        boardEntity.setBoardContents(boardDTO.getBoardContents());
+        boardEntity.setBoardHits(boardDTO.getBoardHits());
+        return boardEntity;
+    }
 }

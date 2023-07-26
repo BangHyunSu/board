@@ -16,6 +16,7 @@
   </tr>
   <tr th:each="board: ${boardList}">
     <td th:text="${board.id}"></td>
+       <!--a 태그를 클릭하면 해당 게시글의 id 값을 보낸다 /board/num -> 이런식으로  ||을 꼭 써주어야 한다-->
     <td><a th:href="@{|/board/${board.id}|}" th:text="${board.boardTitle}"></a></td>
     <td><a th:href="@{/board/${board.id}}" th:text="${board.boardTitle}"></a></td>
     <td th:text="${board.boardWriter}"></td>
@@ -23,5 +24,12 @@
     <td th:text="${board.boardHits}"></td>
   </tr>
 </table>
+<button onclick="index()">게시글 작성</button>
 </body>
 </html>
+<script>
+  const index = () => {
+  location.href = "/";
+  }
+
+</script>
