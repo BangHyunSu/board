@@ -42,7 +42,7 @@ public class BoardController {
         return "list";
     }
 
-    @GetMapping("/{id}") //경로상에 있는 걸 가져오려면 @PathVariable 사용
+    @GetMapping("/{id}") //경로상에 있는 걸 가져오려면 @PathVariable 사용  페이징처리까지 완료
     public String findById(@PathVariable Long id, Model model,
                            @PageableDefault (page=1) Pageable pageable) {
         /*
