@@ -56,6 +56,20 @@ public class BoardController {
         return "detail";
     }
 
+    /*@GetMapping("/{id}") //경로상에 있는 걸 가져오려면 @PathVariable 사용  페이징처리까지 완료
+    public String findById(@PathVariable Long id, Model model,
+                           @PageableDefault (page=1) Pageable pageable) {
+        *//*
+            해당 게시글의 조회수를 하나 올리고
+            게시글 데이터를 가져와서 detail.html 에 출력해야한다
+         *//*
+        boardService.updateHits(id);
+        BoardDTO boardDTO = boardService.findById(id);
+        model.addAttribute("board" , boardDTO);
+        model.addAttribute("page" , pageable.getPageNumber());
+        return "detail";
+    }*/ //삭제 예정
+
     @GetMapping("/update/{id}")
     public String updateForm(@PathVariable Long id, Model model) {
         BoardDTO boardDTO = boardService.findById(id);
