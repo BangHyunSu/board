@@ -31,6 +31,9 @@ public class BoardEntity extends BaseEntity { // DB의 테이블 역할을 하�
     @Column
     private int boardHits;
 
+    @Column
+    private int fileAttached; // 1 or 0
+
     public static BoardEntity toSaveEntity(BoardDTO boardDTO) {
         //save.html 에서 입력한 값을 dto 에 담아온 뒤 그 값을 entity 에 담아주는 작업
         BoardEntity boardEntity = new BoardEntity();
@@ -39,6 +42,7 @@ public class BoardEntity extends BaseEntity { // DB의 테이블 역할을 하�
         boardEntity.setBoardTitle(boardDTO.getBoardTitle());
         boardEntity.setBoardContents(boardDTO.getBoardContents());
         boardEntity.setBoardHits(0);
+        boardEntity.setFileAttached(0); // 파일 없다는 내용.
         return boardEntity;
     }
 

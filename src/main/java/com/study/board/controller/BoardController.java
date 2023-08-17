@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
@@ -28,7 +29,7 @@ public class BoardController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute BoardDTO boardDTO) { //dto 의 이름과 save 에 name 이 같으면 자동으로 불러와준다
+    public String save(@ModelAttribute BoardDTO boardDTO) throws IOException { //dto 의 이름과 save 에 name 이 같으면 자동으로 불러와준다
         System.out.println("boardDTO = " + boardDTO);
         boardService.save(boardDTO);
         return "index";
