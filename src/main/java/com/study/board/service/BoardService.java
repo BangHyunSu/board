@@ -2,6 +2,8 @@ package com.study.board.service;
 
 import com.study.board.dto.BoardDTO;
 import com.study.board.entity.BoardEntity;
+import com.study.board.entity.BoardFileEntity;
+import com.study.board.repository.BoardFIleRepository;
 import com.study.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,6 +30,8 @@ import java.util.Optional;
 public class BoardService {
     private final BoardRepository boardRepository;
 
+    private final BoardFIleRepository boardFIleRepository;
+
     public void save(BoardDTO boardDTO) throws IOException {
         // 파일 첨부 여부에 따라 로직 분리
 
@@ -48,16 +52,26 @@ public class BoardService {
                 6. board_table 에 해당 데이터 save 처리
                 7. board_file_table 에 해당 데이터 save 처리
              */
-            MultipartFile boardFile = boardDTO.getBoardFile(); // 1.
-            String originalFilename = boardFile.getOriginalFilename(); //2.
-            String storedFileName = System.currentTimeMillis() + "_" + originalFilename; //3. 되게 긴 값을 앞에 붙여주는것 겹치면 안되니까
-            String savePath = "C:/springboot_img/" + storedFileName; // 4.  C:/springboot_img/981654895_내사진.jpg
-            boardFile.transferTo(new File(savePath)); // 5.  //예외처리 필요 controller 쪽도
+            BoardEntity boardEntity = BoardEntity.toSaveFileEntity(boardDTO);
+            Long savedId = boardRepository.save(boardEntity).getId();
+            BoardEntity board = boardRepository.findById(savedId).get();
+            for (MultipartFile boardFile: boardDTO.getBoardFile()) {
+                //파일 하나만 할때는 밑에꺼가 파일을 꺼내주는? 역할을 했었는데
+                //파일이 여러개일 경우에는 for 문으로 돌리기 때문에 밑에 코드가  필요 없어짐
+//                MultipartFile boardFile = boardDTO.getBoardFile(); // 1.
+                String originalFilename = boardFile.getOriginalFilename(); //2.
+                String storedFileName = System.currentTimeMillis() + "_" + originalFilename; //3. 되게 긴 값을 앞에 붙여주는것 겹치면 안되니까
+                String savePath = "C:/springboot_img/" + storedFileName; // 4.  C:/springboot_img/981654895_내사진.jpg
+                boardFile.transferTo(new File(savePath)); // 5.  //예외처리 필요 controller 쪽도
 
+
+                BoardFileEntity boardFileEntity = BoardFileEntity.toBoardFileEntity(board, originalFilename, storedFileName);
+                boardFIleRepository.save(boardFileEntity);
+            }
         }
 
     }
-
+    @Transactional
     public List<BoardDTO> findAll() {
         // repository 에서 가져올때는 entity 로 온다 list 형태의 entity 가 넘어온것
         List<BoardEntity> boardEntityList = boardRepository.findAll();
@@ -74,7 +88,8 @@ public class BoardService {
         boardRepository.updateHits(id);
     }
 
-
+    @Transactional
+    //findById 에서 toBoardDTO 를 호출하고 있다 이때 toBoardDTO 안에서 boardEntity 가 boardFileEntity를 접근하고 있기 때문에 붙어줘야함
     public BoardDTO findById(Long id) {
         Optional<BoardEntity> optionalBoardEntity = boardRepository.findById(id);
         //Optional 객체로 넘어왔기 때운에 boardDTO 로 변환해주는것

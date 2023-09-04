@@ -1,11 +1,12 @@
 package com.study.board.entity;
 
-import com.fasterxml.jackson.databind.ser.Serializers;
 import com.study.board.dto.BoardDTO;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -34,6 +35,9 @@ public class BoardEntity extends BaseEntity { // DB의 테이블 역할을 하�
     @Column
     private int fileAttached; // 1 or 0
 
+    //부모자식 관계를 맺어줌
+    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<BoardFileEntity> boardFileEntityList = new ArrayList<>();
     public static BoardEntity toSaveEntity(BoardDTO boardDTO) {
         //save.html 에서 입력한 값을 dto 에 담아온 뒤 그 값을 entity 에 담아주는 작업
         BoardEntity boardEntity = new BoardEntity();
@@ -54,6 +58,17 @@ public class BoardEntity extends BaseEntity { // DB의 테이블 역할을 하�
         boardEntity.setBoardTitle(boardDTO.getBoardTitle());
         boardEntity.setBoardContents(boardDTO.getBoardContents());
         boardEntity.setBoardHits(boardDTO.getBoardHits());
+        return boardEntity;
+    }
+
+    public static BoardEntity toSaveFileEntity(BoardDTO boardDTO) {
+        BoardEntity boardEntity = new BoardEntity();
+        boardEntity.setBoardWriter(boardDTO.getBoardWriter());
+        boardEntity.setBoardPass(boardDTO.getBoardPass());
+        boardEntity.setBoardTitle(boardDTO.getBoardTitle());
+        boardEntity.setBoardContents(boardDTO.getBoardContents());
+        boardEntity.setBoardHits(0);
+        boardEntity.setFileAttached(1); // 파일 있다는 내용.
         return boardEntity;
     }
 }
