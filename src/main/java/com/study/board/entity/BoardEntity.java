@@ -38,6 +38,10 @@ public class BoardEntity extends BaseEntity { // DB의 테이블 역할을 하�
     //부모자식 관계를 맺어줌
     @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<BoardFileEntity> boardFileEntityList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<CommentEntity> commentEntitylist = new ArrayList<>();
+
     public static BoardEntity toSaveEntity(BoardDTO boardDTO) {
         //save.html 에서 입력한 값을 dto 에 담아온 뒤 그 값을 entity 에 담아주는 작업
         BoardEntity boardEntity = new BoardEntity();

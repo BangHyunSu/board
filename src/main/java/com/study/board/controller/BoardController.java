@@ -2,7 +2,9 @@ package com.study.board.controller;
 
 import ch.qos.logback.core.net.SyslogOutputStream;
 import com.study.board.dto.BoardDTO;
+import com.study.board.dto.CommentDTO;
 import com.study.board.service.BoardService;
+import com.study.board.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +23,7 @@ import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 @RequestMapping("/board") // 먼저 /board 를 호출한다
 public class BoardController {
     private final BoardService boardService; // 어캐했누
+    private final CommentService commentService;
 
     @GetMapping("/save")
     public String saveForm() {
@@ -52,6 +55,11 @@ public class BoardController {
          */
         boardService.updateHits(id);
         BoardDTO boardDTO = boardService.findById(id);
+
+        /* 댓글 목록 가져오기*/
+        List<CommentDTO> commentDTOList = commentService.findAll(id);
+        model.addAttribute("commentList" , commentDTOList);
+
         model.addAttribute("board" , boardDTO);
         model.addAttribute("page" , pageable.getPageNumber());
         return "detail";
